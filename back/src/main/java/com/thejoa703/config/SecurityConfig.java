@@ -60,12 +60,12 @@ public class SecurityConfig {
             // 권한 설정
             .authorizeHttpRequests(auth -> auth
             	    .requestMatchers(HttpMethod.OPTIONS , "/**").permitAll()  //#####
-                // Swagger, 인증 관련 경로는 모두 허용
+                // Swagger, 인증 관련 경로는 모두 허용  ------ 점검 ; uploads
                 .requestMatchers(
                     "/auth/**", "/login/**", "/oauth2/**",
                     "/swagger-ui/**", "/v3/api-docs/**",
                     "/swagger-resources/**", "/webjars/**",
-                    "/configuration/**", "/upload/**"  , "/api/deptusers/**" , "/api/likes/**"
+                    "/configuration/**", "/uploads/**"  , "/api/deptusers/**" , "/api/likes/**"
                 ).permitAll()
                 // 전체조회만 허용
                 .requestMatchers(HttpMethod.GET, "/api/posts").permitAll()   
