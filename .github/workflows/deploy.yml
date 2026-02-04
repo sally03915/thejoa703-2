@@ -2,8 +2,8 @@ name: Deploy Fullstack App
 
 on:
   push:
-    branches:
-      - main   # main브랜치에 push 될 때만 실행              
+    branches: 
+      - main   # main브랜치에 push 될 때만 실행                        
 
 jobs:
   backend:
