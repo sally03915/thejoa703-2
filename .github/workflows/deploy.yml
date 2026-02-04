@@ -66,7 +66,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script: mkdir -p /home/ubuntu/app
+          script: mkdir -p /home/ubuntu/app/back/build/libs
+        # 🔧   mkdir -p /home/ubuntu/app
 
       - name: Copy Backend build/libs to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -75,8 +76,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "back/build/libs/*"
-          target: "/home/ubuntu/app/back"
-        # 🔧 build/libs 전체를 복사해서 EC2에서 직접 실행   .......... before  /home/ubuntu/app/back/build/libs
+          target: "/home/ubuntu/app/back/build/libs"
 
       - name: Debug EC2 app directory
         uses: appleboy/ssh-action@v0.1.7
@@ -84,7 +84,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script: ls -lh /home/ubuntu/app/back  # 🔧   Debug EC2 app directory  /home/ubuntu/app/back/build/libs
+          script: ls -lh /home/ubuntu/app/back/build/libs
 
       - name: Copy Backend .env to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -120,14 +120,11 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/app/back
+            cd /home/ubuntu/app/back/build/libs
             pm2 delete backend || true
             export $(cat /home/ubuntu/app/.env | xargs)
-            pm2 start java --name backend -- -jar ${{ env.JAR_FILE }}
-# cd /home/ubuntu/app/back/build/libs
-# pm2 delete backend || true
-# export $(cat /home/ubuntu/app/.env | xargs)
-# pm2 start java --name backend -- -jar ${{ env.JAR_FILE }}
+            pm2 start java --name backend -- -jar $(basename ${{ env.JAR_FILE }})
+        # 🔧    pm2 start java --name backend -- -jar ${{ env.JAR_FILE }}
 
   frontend:
     runs-on: ubuntu-latest
