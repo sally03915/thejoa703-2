@@ -122,13 +122,22 @@ jobs:
           script: |
             cd /home/ubuntu/app/back/build/libs
             pm2 delete backend || true
+            # .env 파일을 환경변수로 로드
             export $(cat /home/ubuntu/app/back/.env | xargs)
+            # 환경변수가 로드된 상태에서 JAR 실행
             pm2 start java --name backend -- -jar back-0.0.1-SNAPSHOT.jar
 
-#     cd /home/ubuntu/app/back/build/libs
-#     pm2 delete backend || true
-#     export $(cat /home/ubuntu/app/.env | xargs)
-#     pm2 start java --name backend -- -jar ${{ env.JAR_FILE }}
+      # - name: Run Backend on EC2 with pm2 (build/libs에서 실행)
+      #   uses: appleboy/ssh-action@v0.1.7
+      #   with:
+      #     host: ${{ secrets.EC2_HOST }}
+      #     username: ${{ secrets.EC2_USER }}
+      #     key: ${{ secrets.EC2_SSH_KEY }}
+      #     script: |
+        #     cd /home/ubuntu/app/back/build/libs
+        #     pm2 delete backend || true
+        #     export $(cat /home/ubuntu/app/.env | xargs)
+        #     pm2 start java --name backend -- -jar ${{ env.JAR_FILE }}
 
 
 
